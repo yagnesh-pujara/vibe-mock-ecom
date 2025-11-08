@@ -12,6 +12,7 @@ export const getProducts = async (req, res) => {
 
             // Transform & store into MongoDB
             const formatted = data.map(p => ({
+                id: p.id,
                 name: p.title,
                 price: p.price,
                 image: p.image,
@@ -33,6 +34,7 @@ export const refreshProducts = async (req, res) => {
         await Product.deleteMany();
         const { data } = await axios.get("https://fakestoreapi.com/products");
         const formatted = data.map(p => ({
+            id: p.id,
             name: p.title,
             price: p.price,
             image: p.image,

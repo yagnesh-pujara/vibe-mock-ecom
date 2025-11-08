@@ -2,8 +2,19 @@ import { useQuery } from "@tanstack/react-query";
 import { productsApi } from "@/api";
 import ProductCard from "@/components/ProductCard";
 import Navbar from "@/components/Navbar";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 const Products = () => {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/login");
+    }
+  }, [navigate]);
+
   const {
     data: products,
     isLoading,

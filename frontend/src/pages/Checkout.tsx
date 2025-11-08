@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "@/contexts/CartContext";
 import Navbar from "@/components/Navbar";
@@ -14,11 +14,18 @@ const Checkout = () => {
   const navigate = useNavigate();
   const { items, totalPrice, clearCart } = useCart();
   const { toast } = useToast();
-  
+
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [showReceipt, setShowReceipt] = useState(false);
   const [orderNumber, setOrderNumber] = useState("");
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/login");
+    }
+  }, [navigate]);
 
   const tax = totalPrice * 0.1;
   const total = totalPrice + tax;
@@ -56,12 +63,14 @@ const Checkout = () => {
     }
 
     // Generate order number
-    const newOrderNumber = `ORD-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+    const newOrderNumber = `ORD-${Date.now()}-${Math.floor(
+      Math.random() * 1000
+    )}`;
     setOrderNumber(newOrderNumber);
-    
+
     // Show receipt modal
     setShowReceipt(true);
-    
+
     // Clear cart
     clearCart();
   };
@@ -81,16 +90,18 @@ const Checkout = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      
+
       <div className="container mx-auto px-4 py-8">
         <h1 className="text-4xl font-bold mb-8 text-foreground">Checkout</h1>
-        
+
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Checkout Form */}
           <div className="lg:col-span-2">
             <Card className="p-6">
-              <h2 className="text-2xl font-semibold mb-6">Customer Information</h2>
-              
+              <h2 className="text-2xl font-semibold mb-6">
+                Customer Information
+              </h2>
+
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="space-y-2">
                   <Label htmlFor="name">Full Name *</Label>
@@ -129,7 +140,7 @@ const Checkout = () => {
           <div className="lg:col-span-1">
             <Card className="p-6 sticky top-20">
               <h2 className="text-xl font-bold mb-4">Order Summary</h2>
-              
+
               <div className="space-y-3 mb-4 max-h-60 overflow-y-auto">
                 {items.map((item) => (
                   <div key={item.id} className="flex justify-between text-sm">

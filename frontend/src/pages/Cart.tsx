@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "@/contexts/CartContext";
 import CartItemCard from "@/components/CartItemCard";
 import Navbar from "@/components/Navbar";
@@ -8,8 +8,18 @@ import { Separator } from "@/components/ui/separator";
 import { ShoppingBag, ArrowRight } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { cartApi } from "@/api";
+import { useEffect } from "react";
 
 const Cart = () => {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/login");
+    }
+  }, [navigate]);
+
   const { items, totalPrice } = useCart();
   const tax = totalPrice * 0.1; // 10% tax
   const total = totalPrice + tax;
